@@ -43,7 +43,7 @@ bot = commands.Bot(command_prefix='?', description=description, intents=intents)
 
 @bot.command()
 async def v(ctx, url: str):
-    """Testing."""
+    await ctx.message.delete()
     subprocess.Popen(deleteTemp, shell=True).wait()
     ydl_opts = {'format_sort' : ['res:1280', '+br'],
                 'cookiefile' : cookieFile,
@@ -93,7 +93,7 @@ async def v(ctx, url: str):
     #embed.description = 'Sent by: ' + str(ctx.author)
     #embed.url = f'{url}'
     #await ctx.send(embed=embed,file=discord.File(cwd + "temp.mp4"), silent=True)
-    await ctx.message.delete()
+
 
 
 bot.run(token)
