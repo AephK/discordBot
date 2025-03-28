@@ -9,12 +9,16 @@ if platform.system() == 'Linux':
     cwd = os.getcwd() + '/'
     cookieFile = '/home/aephk/cookies.txt'
     ffmpegLoc = '/usr/lib/jellyfin-ffmpeg/ffmpeg'
+    #ffprobe = "/usr/bin/ffprobe"
+    #youtubedl = "/home/aephk/.local/bin/yt-dlp"
     deleteTemp = 'rm temp.*'
 
 elif platform.system():
     cwd = os.getcwd() + '\\'
     cookieFile = 'C:\\Temp\\discordBotTest\\cookies.txt'
     ffmpegLoc = "C:\\Program Files\\ffmpeg\\bin\\ffmpeg.exe"
+    #ffprobe = "C:\\Temp\\ffmpeg\\bin\\ffprobe.exe"
+    #youtubedl = "C:\\youtubedl\\yt-dlp.exe"
     deleteTemp = 'del temp.*'
 
 print(cwd)
@@ -42,10 +46,10 @@ async def v(ctx, url: str):
                 'ffmpeg_location' : ffmpegLoc,
                 'merge_output_format' : 'mp4',
                 'outtmpl': cwd + 'temp.mp4'}
-    
+
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download(url)
-    
+
     originalSize = int(ffmpeg.probe(cwd + "temp.mp4")["format"]["size"])
 
     if (originalSize > 10485760):
@@ -80,11 +84,11 @@ async def v(ctx, url: str):
 
     file = open(cwd + 'temp.mp4', 'rb')
     caption='Sent by: ' + str(ctx.author)
-    await ctx.send(caption, file=discord.File(cwd + "temp.mp4"))
+    await ctx.send(caption, file=discord.File(cwd + "temp.mp4"), silent=True)
     #embed = discord.Embed()
     #embed.description = 'Sent by: ' + str(ctx.author)
     #embed.url = f'{url}'
-    #await ctx.send(embed=embed,file=discord.File(cwd + "temp.mp4"))
+    #await ctx.send(embed=embed,file=discord.File(cwd + "temp.mp4"), silent=True)
     await ctx.message.delete()
 
 
