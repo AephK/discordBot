@@ -1,9 +1,13 @@
-token = 'MTM1NTE5NTE5ODcxOTkyMjQzOA.Gs_iEn.hbNZUyXHcY4zRHrAkYalUVli8TfMGiOmzKLSE8'
-
 #general packages
 import os, logging, random, math, sys, platform, urllib.request, subprocess
 #media handling packages
 import yt_dlp, ffmpeg
+
+scriptDir = os.path.dirname('__file__')
+tokenFile = open(scriptDir + 'discordToken', 'r')
+token = tokenFile.read()
+
+
 
 if platform.system() == 'Linux':
     cwd = os.getcwd() + '/'
