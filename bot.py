@@ -3,17 +3,20 @@ import os, logging, random, math, sys, platform, urllib.request, subprocess
 #media handling packages
 import yt_dlp, ffmpeg
 
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+sys.stdout = open("discordBot.log", "w")
+sys.stderr = open("discordBotErr.log","w")
+
 scriptDir = os.path.dirname('__file__')
 tokenFile = open(scriptDir + 'discordToken', 'r')
 token = tokenFile.read()
-
 
 
 if platform.system() == 'Linux':
     cwd = os.getcwd() + '/'
     cookieFile = '/home/aephk/cookies.txt'
     ffmpegLoc = '/usr/lib/jellyfin-ffmpeg/ffmpeg'
-    #ffprobe = "/usr/bin/ffprobe"
+    #ffprobe = '/usr/lib/jellyfin-ffmpeg/ffmpeg'
     #youtubedl = "/home/aephk/.local/bin/yt-dlp"
     deleteTemp = 'rm temp.*'
 
@@ -56,7 +59,7 @@ async def v(ctx, url: str):
 
     originalSize = int(ffmpeg.probe(cwd + "temp.mp4")["format"]["size"])
 
-    if (originalSize > 10485760):
+    if (originalSize > 10000000):
         try:
             print("renaming mp4 to temp")
             os.rename(cwd + "temp.mp4", cwd + "temp.temp")
@@ -73,12 +76,13 @@ async def v(ctx, url: str):
 
             output_file = f"{cwd}temp.mp4"
             ffmpeg.input(f"{cwd}temp.temp").filter('pad', width='ceil(iw/2)*2', height='ceil(ih/2)*2').output(output_file,
-                vcodec='h264',
-                video_bitrate=f"{videoBitrate}M",
+                vcodec='h264_qsv',
+                vb=f"{videoBitrate}M",
                 acodec='copy',
-                audio_bitrate=f"{audioBitrate}k",
+                ab=f"{audioBitrate}k",
                 maxrate=f"{finalMaxBitrate}M",
-                bufsize="1M") \
+                bufsize="1M",
+                map='0:a') \
             .run()
 
         except:
@@ -87,13 +91,8 @@ async def v(ctx, url: str):
                 os.rename(cwd + "temp.temp", cwd + "temp.mp4")
 
     file = open(cwd + 'temp.mp4', 'rb')
-    caption='Sent by: ' + str(ctx.author)
+    caption='Sent by: ' + str(ctx.author.display_name)
     await ctx.send(caption, file=discord.File(cwd + "temp.mp4"), silent=True)
-    #embed = discord.Embed()
-    #embed.description = 'Sent by: ' + str(ctx.author)
-    #embed.url = f'{url}'
-    #await ctx.send(embed=embed,file=discord.File(cwd + "temp.mp4"), silent=True)
-
 
 
 bot.run(token)
